@@ -30,6 +30,9 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // Set PAYLOAD_DB_PUSH=true on first deploy to auto-create schema.
+    // Set to false (or remove) once migrations exist.
+    push: process.env.PAYLOAD_DB_PUSH === 'true',
   }),
   sharp,
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
