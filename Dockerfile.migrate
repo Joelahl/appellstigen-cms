@@ -4,4 +4,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
-CMD ["node_modules/.bin/cross-env", "PAYLOAD_CONFIG_PATH=src/payload.config.ts", "node_modules/.bin/payload", "migrate"]
+# Generate the initial migration file from the current schema, then apply it
+CMD ["sh", "-c", "node_modules/.bin/cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts node_modules/.bin/payload migrate:create --name init 2>&1 || true && node_modules/.bin/cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts node_modules/.bin/payload migrate 2>&1"]
