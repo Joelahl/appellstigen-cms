@@ -18,7 +18,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Dummy env vars so Payload config parses during build without a live DB
 ENV PAYLOAD_SECRET=build-time-secret
 ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
-RUN npm run build
+RUN npm run generate:importmap && npm run build
 
 # Production image
 FROM base AS runner

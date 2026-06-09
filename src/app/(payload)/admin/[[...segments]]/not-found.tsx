@@ -7,12 +7,9 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
+const configPromise = import('@payload-config').then((mod) => mod.default) as any
+
 const NotFound = ({ params, searchParams }: Args) =>
-  NotFoundPage({
-    config: import('@payload-config') as any,
-    importMap,
-    params,
-    searchParams,
-  })
+  NotFoundPage({ config: configPromise, importMap, params, searchParams })
 
 export default NotFound

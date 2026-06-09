@@ -7,19 +7,12 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
+const configPromise = import('@payload-config').then((mod) => mod.default) as any
+
 export const generateMetadata = ({ params, searchParams }: Args) =>
-  generatePageMetadata({
-    config: import('@payload-config') as any,
-    params,
-    searchParams,
-  })
+  generatePageMetadata({ config: configPromise, params, searchParams })
 
 const Page = ({ params, searchParams }: Args) =>
-  RootPage({
-    config: import('@payload-config') as any,
-    params,
-    searchParams,
-    importMap,
-  })
+  RootPage({ config: configPromise, params, searchParams, importMap })
 
 export default Page
