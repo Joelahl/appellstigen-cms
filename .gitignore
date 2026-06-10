@@ -18,3 +18,4 @@ public/media/
 # misc
 .DS_Store
 *.log
+tsconfig.tsbuildinfo
