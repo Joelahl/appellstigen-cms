@@ -6,6 +6,10 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  access: {
+    // Uploaded files must be publicly readable so front-end sites can display them.
+    read: () => true,
+  },
   admin: {
     useAsTitle: 'filename',
   },

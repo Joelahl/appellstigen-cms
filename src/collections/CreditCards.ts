@@ -12,6 +12,11 @@ import type { CollectionConfig } from 'payload'
  */
 export const CreditCards: CollectionConfig = {
   slug: 'credit-cards',
+  access: {
+    // Public (unauthenticated) clients may only read published cards.
+    // Authenticated admins see everything.
+    read: ({ req: { user } }) => (user ? true : { status: { equals: 'published' } }),
+  },
   admin: {
     useAsTitle: 'cardName',
     defaultColumns: ['cardName', 'issuer', 'cardType', 'status', 'featured'],
