@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { layoutBlocks } from '../blocks'
 
 /**
  * Pages — editorial pages for a site (homepage copy, category landing pages,
@@ -78,13 +79,23 @@ export const Pages: CollectionConfig = {
       label: 'Ingress / utdrag',
     },
     {
+      name: 'layout',
+      type: 'blocks',
+      label: 'Sidlayout (block)',
+      blocks: layoutBlocks,
+      admin: {
+        description:
+          'Bygg sidan med block. Om tomt används det migrerade HTML-innehållet nedan.',
+      },
+    },
+    {
       name: 'content',
       type: 'textarea',
-      label: 'Innehåll (HTML — migrerat)',
+      label: 'Innehåll (HTML — migrerat, fallback)',
       maxLength: 500000,
       admin: {
-        description: 'Migrerat HTML-innehåll från WordPress. Renderas som rik text.',
-        rows: 24,
+        description: 'Migrerat HTML-innehåll. Används om Sidlayout är tom.',
+        rows: 18,
       },
     },
     {
