@@ -6,14 +6,23 @@ import type { CollectionConfig } from 'payload'
  */
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  versions: {
+    drafts: {
+      autosave: { interval: 375 },
+    },
+    maxPerDoc: 20,
+  },
   access: {
-    // Public clients may only read published pages; admins see everything.
-    read: ({ req: { user } }) => (user ? true : { status: { equals: 'published' } }),
+    read: () => true,
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'pageType', 'site', 'status'],
+    defaultColumns: ['title', 'slug', 'pageType', 'site', '_status'],
     description: 'Sidor — startsida, kategorisidor, om oss, juridiskt m.m.',
+    preview: (doc) =>
+      doc?.slug
+        ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/${doc.slug}`
+        : null,
   },
   fields: [
     {
@@ -30,20 +39,17 @@ export const Pages: CollectionConfig = {
       label: 'Slug (URL)',
       admin: { description: 'e.g. kreditkort-med-bonus' },
     },
+    // Legacy status field — superseded by native drafts. Hidden/unused.
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'published',
+      options: ['published', 'draft', 'archived'],
+      admin: { hidden: true },
+    },
     {
       type: 'row',
       fields: [
-        {
-          name: 'status',
-          type: 'select',
-          defaultValue: 'draft',
-          options: [
-            { label: 'Publicerad', value: 'published' },
-            { label: 'Utkast', value: 'draft' },
-            { label: 'Arkiverad', value: 'archived' },
-          ],
-          admin: { width: '34%' },
-        },
         {
           name: 'pageType',
           type: 'select',

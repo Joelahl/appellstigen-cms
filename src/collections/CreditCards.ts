@@ -12,15 +12,25 @@ import type { CollectionConfig } from 'payload'
  */
 export const CreditCards: CollectionConfig = {
   slug: 'credit-cards',
+  // Native drafts: unpublished versions are only returned to authenticated
+  // users (and via ?draft=true). Public clients get the published version.
+  versions: {
+    drafts: {
+      autosave: { interval: 375 },
+    },
+    maxPerDoc: 20,
+  },
   access: {
-    // Public (unauthenticated) clients may only read published cards.
-    // Authenticated admins see everything.
-    read: ({ req: { user } }) => (user ? true : { status: { equals: 'published' } }),
+    read: () => true,
   },
   admin: {
     useAsTitle: 'cardName',
-    defaultColumns: ['cardName', 'issuer', 'cardType', 'status', 'featured'],
+    defaultColumns: ['cardName', 'issuer', 'cardType', '_status', 'featured'],
     description: 'Kreditkort — global datakälla som kan användas av flera sajter.',
+    preview: (doc) =>
+      doc?.slug
+        ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/kreditkort/${doc.slug}`
+        : null,
   },
   fields: [
     // ── Always-visible identity ───────────────────────────────────────────
@@ -38,33 +48,31 @@ export const CreditCards: CollectionConfig = {
       label: 'Slug (URL)',
       admin: { description: 'e.g. morrow-bank — används i /kreditkort/[slug]' },
     },
+    // Legacy status field — superseded by native drafts (_status). Hidden and
+    // unused; retained only so migrations stay additive. Safe to drop later.
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'published',
+      options: ['published', 'draft', 'archived'],
+      admin: { hidden: true },
+    },
     {
       type: 'row',
       fields: [
-        {
-          name: 'status',
-          type: 'select',
-          defaultValue: 'draft',
-          options: [
-            { label: 'Publicerat', value: 'published' },
-            { label: 'Utkast', value: 'draft' },
-            { label: 'Arkiverat', value: 'archived' },
-          ],
-          admin: { width: '34%' },
-        },
         {
           name: 'featured',
           type: 'checkbox',
           label: 'Utvalt kort',
           defaultValue: false,
-          admin: { width: '33%' },
+          admin: { width: '50%' },
         },
         {
           name: 'sortOrder',
           type: 'number',
           label: 'Sortering',
           defaultValue: 100,
-          admin: { width: '33%', description: 'Lägre = högre upp' },
+          admin: { width: '50%', description: 'Lägre = högre upp' },
         },
       ],
     },

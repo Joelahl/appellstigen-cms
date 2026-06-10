@@ -14,11 +14,30 @@ import { Media } from './collections/Media'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const PREVIEW_URL = process.env.PREVIEW_URL || ''
+const PREVIEW_SECRET = process.env.PREVIEW_SECRET || ''
+
+// Build the front-end preview URL for a doc in a given collection.
+const previewPath = (slug: string | undefined, collection: string | undefined) => {
+  if (!slug) return ''
+  const path = collection === 'pages' ? `/${slug}` : `/kreditkort/${slug}`
+  return `${PREVIEW_URL}/api/preview?secret=${PREVIEW_SECRET}&path=${encodeURIComponent(path)}`
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
+    },
+    livePreview: {
+      url: ({ data, collectionConfig }) => previewPath(data?.slug, collectionConfig?.slug),
+      collections: ['pages', 'credit-cards'],
+      breakpoints: [
+        { label: 'Mobil', name: 'mobile', width: 390, height: 844 },
+        { label: 'Surfplatta', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+      ],
     },
   },
   collections: [Users, Sites, CreditCards, Pages, Media],
@@ -37,6 +56,6 @@ export default buildConfig({
   }),
   sharp,
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL || '', PREVIEW_URL].filter(Boolean),
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || '', PREVIEW_URL].filter(Boolean),
 })

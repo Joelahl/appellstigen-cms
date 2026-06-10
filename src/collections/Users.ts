@@ -5,7 +5,11 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
+  // useAPIKey lets a service user (e.g. the front-end preview route) authenticate
+  // with a static API key to fetch draft content.
+  auth: {
+    useAPIKey: true,
+  },
   fields: [
     {
       name: 'name',
