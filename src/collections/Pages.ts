@@ -1,0 +1,108 @@
+import type { CollectionConfig } from 'payload'
+
+/**
+ * Pages — editorial pages for a site (homepage copy, category landing pages,
+ * about, legal, etc.). Content migrated from WordPress is stored as HTML.
+ */
+export const Pages: CollectionConfig = {
+  slug: 'pages',
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'slug', 'pageType', 'site', 'status'],
+    description: 'Sidor — startsida, kategorisidor, om oss, juridiskt m.m.',
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+      label: 'Titel',
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      index: true,
+      label: 'Slug (URL)',
+      admin: { description: 'e.g. kreditkort-med-bonus' },
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'status',
+          type: 'select',
+          defaultValue: 'draft',
+          options: [
+            { label: 'Publicerad', value: 'published' },
+            { label: 'Utkast', value: 'draft' },
+            { label: 'Arkiverad', value: 'archived' },
+          ],
+          admin: { width: '34%' },
+        },
+        {
+          name: 'pageType',
+          type: 'select',
+          defaultValue: 'info',
+          label: 'Sidtyp',
+          options: [
+            { label: 'Startsida', value: 'homepage' },
+            { label: 'Kategorisida', value: 'category' },
+            { label: 'Informationssida', value: 'info' },
+            { label: 'Juridisk', value: 'legal' },
+            { label: 'Övrig', value: 'other' },
+          ],
+          admin: { width: '33%' },
+        },
+        {
+          name: 'menuOrder',
+          type: 'number',
+          label: 'Ordning',
+          defaultValue: 0,
+          admin: { width: '33%' },
+        },
+      ],
+    },
+    {
+      name: 'site',
+      type: 'relationship',
+      relationTo: 'sites',
+      label: 'Sajt',
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'excerpt',
+      type: 'textarea',
+      label: 'Ingress / utdrag',
+    },
+    {
+      name: 'content',
+      type: 'textarea',
+      label: 'Innehåll (HTML — migrerat)',
+      admin: {
+        description: 'Migrerat HTML-innehåll från WordPress. Renderas som rik text.',
+        rows: 24,
+      },
+    },
+    {
+      name: 'seo',
+      type: 'group',
+      label: 'SEO',
+      fields: [
+        { name: 'metaTitle', type: 'text', label: 'Meta Title' },
+        { name: 'metaDescription', type: 'textarea', label: 'Meta Description' },
+        { name: 'ogImageUrl', type: 'text', label: 'OG Image — URL' },
+      ],
+    },
+    {
+      name: 'source',
+      type: 'group',
+      label: 'Källa',
+      admin: { position: 'sidebar' },
+      fields: [
+        { name: 'sourceUrl', type: 'text', label: 'Käll-URL' },
+        { name: 'wpId', type: 'number', label: 'WordPress ID' },
+      ],
+    },
+  ],
+}
