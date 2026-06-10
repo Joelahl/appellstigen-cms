@@ -96,7 +96,7 @@ export const Pages: CollectionConfig = {
     },
     {
       name: 'bestCardSummary',
-      type: 'textarea',
+      type: 'richText',
       label: 'Vilket är bäst? — fritext (visas i "Vilket är bäst?"-rutan)',
     },
     {

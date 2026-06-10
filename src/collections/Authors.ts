@@ -17,7 +17,7 @@ export const Authors: CollectionConfig = {
     { name: 'title', type: 'text', label: 'Titel/roll (t.ex. Kreditkortsexpert)' },
     { name: 'avatar', type: 'upload', relationTo: 'media', label: 'Profilbild (uppladdad)' },
     { name: 'avatarUrl', type: 'text', label: 'Profilbild — URL (alternativ)' },
-    { name: 'bio', type: 'textarea', label: 'Kort bio' },
+    { name: 'bio', type: 'richText', label: 'Kort bio' },
     {
       type: 'row',
       fields: [

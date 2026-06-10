@@ -107,7 +107,7 @@ export const Sites: CollectionConfig = {
       label: 'Om / Vad vi gör',
       fields: [
         { name: 'heading', type: 'text', label: 'Rubrik', defaultValue: 'Vad vi gör' },
-        { name: 'text', type: 'textarea', label: 'Text' },
+        { name: 'text', type: 'richText', label: 'Text' },
       ],
     },
     {
