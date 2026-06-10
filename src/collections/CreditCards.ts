@@ -1,26 +1,24 @@
 import type { CollectionConfig } from 'payload'
 
+/**
+ * CreditCards — GLOBAL library of factual credit-card data.
+ *
+ * Cards are shared across all sites in the platform (no required `site`).
+ * Field structure mirrors the legacy WordPress ACF "Data: Kort" group so
+ * content migrates 1:1, organised into admin tabs for clarity.
+ *
+ * Fee/rate fields are stored as TEXT (e.g. "21,40 %", "0 kr", "50 dagar")
+ * to preserve the exact source formatting from the WordPress site.
+ */
 export const CreditCards: CollectionConfig = {
   slug: 'credit-cards',
   admin: {
     useAsTitle: 'cardName',
-    defaultColumns: ['cardName', 'issuer', 'site', 'editorRating', 'featured'],
-    description: 'Kreditkort för jämförelse — ett dokument per kort per sajt.',
+    defaultColumns: ['cardName', 'issuer', 'cardType', 'status', 'featured'],
+    description: 'Kreditkort — global datakälla som kan användas av flera sajter.',
   },
   fields: [
-    // ── Relation ──────────────────────────────────────────────────────────
-    {
-      name: 'site',
-      type: 'relationship',
-      relationTo: 'sites',
-      required: true,
-      label: 'Sajt',
-      admin: {
-        description: 'Vilken sajt detta kort tillhör',
-      },
-    },
-
-    // ── Identity ──────────────────────────────────────────────────────────
+    // ── Always-visible identity ───────────────────────────────────────────
     {
       name: 'cardName',
       type: 'text',
@@ -33,307 +31,258 @@ export const CreditCards: CollectionConfig = {
       required: true,
       unique: true,
       label: 'Slug (URL)',
-      admin: {
-        description: 'e.g. amex-gold — used in /kreditkort/[slug]',
-      },
+      admin: { description: 'e.g. morrow-bank — används i /kreditkort/[slug]' },
     },
     {
-      name: 'issuer',
-      type: 'text',
-      required: true,
-      label: 'Utgivare (bank/kortbolag)',
-    },
-    {
-      name: 'cardImage',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Kortbild',
-    },
-    {
-      name: 'featured',
-      type: 'checkbox',
-      label: 'Utvalt kort (visas överst)',
-      defaultValue: false,
-    },
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'published',
-      options: [
-        { label: 'Publicerat', value: 'published' },
-        { label: 'Utkast', value: 'draft' },
-        { label: 'Arkiverat', value: 'archived' },
-      ],
-    },
-
-    // ── Fees & Rates ──────────────────────────────────────────────────────
-    {
-      name: 'fees',
-      type: 'group',
-      label: 'Avgifter & Ränta',
+      type: 'row',
       fields: [
         {
-          name: 'annualFee',
-          type: 'number',
-          label: 'Årsavgift (SEK)',
-          min: 0,
+          name: 'status',
+          type: 'select',
+          defaultValue: 'draft',
+          options: [
+            { label: 'Publicerat', value: 'published' },
+            { label: 'Utkast', value: 'draft' },
+            { label: 'Arkiverat', value: 'archived' },
+          ],
+          admin: { width: '34%' },
         },
         {
-          name: 'annualFeeNote',
-          type: 'text',
-          label: 'Årsavgift — kommentar (t.ex. "gratis första året")',
-        },
-        {
-          name: 'interestRate',
-          type: 'number',
-          label: 'Ränta (%)',
-          min: 0,
-          admin: {
-            description: 'Kreditränta per år i procent',
-          },
-        },
-        {
-          name: 'interestFreedays',
-          type: 'number',
-          label: 'Räntefria dagar',
-          min: 0,
-        },
-        {
-          name: 'withdrawalFee',
-          type: 'text',
-          label: 'Uttagsavgift',
-        },
-        {
-          name: 'foreignTransactionFee',
-          type: 'text',
-          label: 'Utlandsavgift',
-        },
-      ],
-    },
-
-    // ── Credit Limit ──────────────────────────────────────────────────────
-    {
-      name: 'creditLimit',
-      type: 'group',
-      label: 'Kreditgräns',
-      fields: [
-        {
-          name: 'min',
-          type: 'number',
-          label: 'Min (SEK)',
-        },
-        {
-          name: 'max',
-          type: 'number',
-          label: 'Max (SEK)',
-        },
-      ],
-    },
-
-    // ── Bonus & Cashback ──────────────────────────────────────────────────
-    {
-      name: 'rewards',
-      type: 'group',
-      label: 'Bonus & Cashback',
-      fields: [
-        {
-          name: 'welcomeBonus',
-          type: 'text',
-          label: 'Välkomstbonus',
-        },
-        {
-          name: 'cashbackPercent',
-          type: 'number',
-          label: 'Cashback (%)',
-          min: 0,
-        },
-        {
-          name: 'cashbackNote',
-          type: 'text',
-          label: 'Cashback — kommentar',
-        },
-        {
-          name: 'pointsProgram',
-          type: 'text',
-          label: 'Poängprogram',
-        },
-      ],
-    },
-
-    // ── Benefits ─────────────────────────────────────────────────────────
-    {
-      name: 'benefits',
-      type: 'array',
-      label: 'Förmåner',
-      fields: [
-        {
-          name: 'benefit',
-          type: 'text',
-          required: true,
-          label: 'Förmån',
-        },
-      ],
-    },
-
-    // ── Insurance ─────────────────────────────────────────────────────────
-    {
-      name: 'insurance',
-      type: 'group',
-      label: 'Försäkringar',
-      fields: [
-        {
-          name: 'travelInsurance',
+          name: 'featured',
           type: 'checkbox',
-          label: 'Reseförsäkring',
+          label: 'Utvalt kort',
           defaultValue: false,
+          admin: { width: '33%' },
         },
         {
-          name: 'travelInsuranceNote',
-          type: 'text',
-          label: 'Reseförsäkring — detaljer',
-        },
-        {
-          name: 'purchaseProtection',
-          type: 'checkbox',
-          label: 'Köpskydd',
-          defaultValue: false,
-        },
-        {
-          name: 'cancellationProtection',
-          type: 'checkbox',
-          label: 'Avbeställningsskydd',
-          defaultValue: false,
-        },
-        {
-          name: 'priceProtection',
-          type: 'checkbox',
-          label: 'Prisskydd',
-          defaultValue: false,
-        },
-      ],
-    },
-
-    // ── Eligibility ───────────────────────────────────────────────────────
-    {
-      name: 'eligibility',
-      type: 'group',
-      label: 'Krav & Behörighet',
-      fields: [
-        {
-          name: 'minAge',
+          name: 'sortOrder',
           type: 'number',
-          label: 'Lägsta ålder',
-          defaultValue: 18,
+          label: 'Sortering',
+          defaultValue: 100,
+          admin: { width: '33%', description: 'Lägre = högre upp' },
         },
+      ],
+    },
+
+    // ── Tabs (mirror ACF tabs) ────────────────────────────────────────────
+    {
+      type: 'tabs',
+      tabs: [
+        // 1. Allmänt
         {
-          name: 'minIncome',
-          type: 'number',
-          label: 'Lägsta inkomst (SEK/år)',
+          label: 'Allmänt',
+          fields: [
+            { name: 'issuer', type: 'text', label: 'Utgivare (bank/kortbolag)' },
+            { name: 'cardType', type: 'text', label: 'Korttyp (t.ex. Bonuskort, Bensinkort)' },
+            { name: 'cardImageUrl', type: 'text', label: 'Kortbild — URL' },
+            {
+              name: 'cardImage',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Kortbild (uppladdad — valfri)',
+            },
+            { name: 'customColor', type: 'text', label: 'Custom color (hex)' },
+            { name: 'uniqueKw', type: 'text', label: 'Unikt nyckelord' },
+            { name: 'bestFor', type: 'text', label: 'Passar bra som' },
+            {
+              name: 'description',
+              type: 'textarea',
+              label: 'Kort beskrivning',
+            },
+          ],
         },
+
+        // 2. Betyg
         {
-          name: 'requiresSwedishResident',
-          type: 'checkbox',
-          label: 'Kräver folkbokföring i Sverige',
-          defaultValue: true,
+          label: 'Betyg',
+          fields: [
+            {
+              name: 'editorRating',
+              type: 'number',
+              label: 'Redaktörens betyg (1–5)',
+              min: 0,
+              max: 5,
+            },
+            {
+              name: 'ratings',
+              type: 'group',
+              label: 'Delbetyg',
+              fields: [
+                { name: 'bonus', type: 'number', label: 'Bonus betyg' },
+                { name: 'insurance', type: 'number', label: 'Försäkringar betyg' },
+                { name: 'creditTerms', type: 'number', label: 'Kreditvillkor betyg' },
+                { name: 'fees', type: 'number', label: 'Avgift betyg' },
+              ],
+            },
+          ],
+        },
+
+        // 3. Avgifter & villkor
+        {
+          label: 'Avgifter & villkor',
+          fields: [
+            {
+              name: 'fees',
+              type: 'group',
+              label: 'Avgifter & ränta',
+              fields: [
+                { name: 'annualCost', type: 'text', label: 'Årskostnad' },
+                { name: 'maxCredit', type: 'text', label: 'Maxkredit' },
+                { name: 'interestRate', type: 'text', label: 'Kreditränta' },
+                { name: 'interestFreePeriod', type: 'text', label: 'Räntefri period' },
+                { name: 'currencyFee', type: 'text', label: 'Valutaavgift/-påslag' },
+                { name: 'withdrawalFee', type: 'text', label: 'Uttagsavgift' },
+                { name: 'invoiceFee', type: 'text', label: 'Aviavgift' },
+                { name: 'reminderFee', type: 'text', label: 'Påminnelseavgift' },
+                { name: 'overdraftFee', type: 'text', label: 'Övertrasseringsavgift' },
+              ],
+            },
+            {
+              name: 'eligibility',
+              type: 'group',
+              label: 'Krav',
+              fields: [
+                { name: 'minAge', type: 'text', label: 'Ålderskrav' },
+                { name: 'minIncome', type: 'text', label: 'Inkomstkrav' },
+                { name: 'paymentRemarks', type: 'text', label: 'Betalningsanmärkningar' },
+              ],
+            },
+            { name: 'termsText', type: 'text', label: 'Terms & Conditions text' },
+          ],
+        },
+
+        // 4. Bonus & fördelar
+        {
+          label: 'Bonus & fördelar',
+          fields: [
+            { name: 'bonus', type: 'text', label: 'Bonus' },
+            { name: 'concierge', type: 'text', label: 'Concierge' },
+            { name: 'airportLounge', type: 'text', label: 'Flyglounger' },
+            {
+              name: 'pros',
+              type: 'array',
+              label: 'Fördelar',
+              fields: [{ name: 'item', type: 'text', required: true, label: 'Fördel' }],
+            },
+            {
+              name: 'cons',
+              type: 'array',
+              label: 'Nackdelar',
+              fields: [{ name: 'item', type: 'text', required: true, label: 'Nackdel' }],
+            },
+          ],
+        },
+
+        // 5. Funktion
+        {
+          label: 'Funktion',
+          fields: [
+            { name: 'applePay', type: 'checkbox', label: 'Apple Pay', defaultValue: false },
+            { name: 'googlePay', type: 'checkbox', label: 'Google Pay', defaultValue: false },
+            { name: 'contactless', type: 'checkbox', label: 'Contactless', defaultValue: false },
+          ],
+        },
+
+        // 6. Recension (migrerat innehåll)
+        {
+          label: 'Recension',
+          fields: [
+            { name: 'verdict', type: 'textarea', label: 'Kort omdöme' },
+            {
+              name: 'reviewContent',
+              type: 'textarea',
+              label: 'Fullständig recension (HTML — migrerat innehåll)',
+              admin: {
+                description:
+                  'Migrerat HTML-innehåll från WordPress. Renderas som rik text på sajten.',
+                rows: 20,
+              },
+            },
+            { name: 'screenshotUrl', type: 'text', label: 'Skärmdump — URL' },
+          ],
+        },
+
+        // 7. Topplist promo
+        {
+          label: 'Promo',
+          fields: [
+            { name: 'bonusTitle', type: 'text', label: 'Bonus title' },
+            { name: 'bonusExplainer', type: 'text', label: 'Bonus explainer' },
+            { name: 'cashbackTitle', type: 'text', label: 'Cashback title' },
+            { name: 'cashbackExplainer', type: 'text', label: 'Cashback explainer' },
+          ],
+        },
+
+        // 8. Länkar (affiliate CTAs)
+        {
+          label: 'Länkar (CTA)',
+          fields: [
+            {
+              name: 'affiliateLink',
+              type: 'text',
+              label: 'Affiliatelänk (huvud)',
+              admin: { description: 'Primär ansökningslänk' },
+            },
+            { name: 'ctaText', type: 'text', label: 'CTA-text', defaultValue: 'Ansök nu' },
+            {
+              name: 'ctaLinks',
+              type: 'group',
+              label: 'CTA per kategori (valfritt)',
+              fields: [
+                { name: 'index', type: 'text', label: 'CTA Index' },
+                { name: 'review', type: 'text', label: 'CTA Review' },
+                { name: 'bonus', type: 'text', label: 'CTA Bonuskort' },
+                { name: 'lowRate', type: 'text', label: 'CTA Låg ränta' },
+                { name: 'withoutUC', type: 'text', label: 'CTA Utan UC' },
+                { name: 'corporate', type: 'text', label: 'CTA Företagskort' },
+                { name: 'fuel', type: 'text', label: 'CTA Bensinkort' },
+                { name: 'debit', type: 'text', label: 'CTA Debet' },
+                { name: 'cashback', type: 'text', label: 'CTA Cashback' },
+                { name: 'free', type: 'text', label: 'CTA Gratis' },
+                { name: 'cheap', type: 'text', label: 'CTA Billiga' },
+              ],
+            },
+          ],
+        },
+
+        // 9. SEO
+        {
+          label: 'SEO',
+          fields: [
+            { name: 'seo', type: 'group', label: 'SEO', fields: [
+              { name: 'metaTitle', type: 'text', label: 'Meta Title' },
+              { name: 'metaDescription', type: 'textarea', label: 'Meta Description' },
+              { name: 'ogImageUrl', type: 'text', label: 'OG Image — URL' },
+            ] },
+          ],
         },
       ],
     },
 
-    // ── Editor Review ─────────────────────────────────────────────────────
+    // ── Relations & source (sidebar) ──────────────────────────────────────
     {
-      name: 'editorRating',
-      type: 'number',
-      label: 'Redaktörens betyg (1–5)',
-      min: 1,
-      max: 5,
-      required: true,
+      name: 'sites',
+      type: 'relationship',
+      relationTo: 'sites',
+      hasMany: true,
+      label: 'Sajter (valfritt — vilka sajter visar detta kort)',
+      admin: { position: 'sidebar' },
     },
     {
-      name: 'pros',
-      type: 'array',
-      label: 'Fördelar',
-      fields: [
-        { name: 'item', type: 'text', required: true, label: 'Fördel' },
-      ],
-    },
-    {
-      name: 'cons',
-      type: 'array',
-      label: 'Nackdelar',
-      fields: [
-        { name: 'item', type: 'text', required: true, label: 'Nackdel' },
-      ],
-    },
-    {
-      name: 'verdict',
-      type: 'textarea',
-      label: 'Redaktörens omdöme (kort)',
-    },
-    {
-      name: 'fullReview',
-      type: 'richText',
-      label: 'Fullständig recension',
-    },
-
-    // ── Affiliate ─────────────────────────────────────────────────────────
-    {
-      name: 'affiliateLink',
-      type: 'text',
-      label: 'Affiliatelänk',
-      required: true,
-      admin: {
-        description: 'Länk till kortets ansökningssida via affiliatenätverk',
-      },
-    },
-    {
-      name: 'ctaText',
-      type: 'text',
-      label: 'CTA-text',
-      defaultValue: 'Ansök nu',
-    },
-    {
-      name: 'sortOrder',
-      type: 'number',
-      label: 'Sorteringsordning',
-      defaultValue: 100,
-      admin: {
-        description: 'Lägre siffra = visas högre upp',
-      },
-    },
-
-    // ── SEO ───────────────────────────────────────────────────────────────
-    {
-      name: 'seo',
+      name: 'source',
       type: 'group',
-      label: 'SEO',
+      label: 'Källa',
+      admin: { position: 'sidebar' },
       fields: [
-        {
-          name: 'metaTitle',
-          type: 'text',
-          label: 'Meta Title',
-        },
-        {
-          name: 'metaDescription',
-          type: 'textarea',
-          label: 'Meta Description',
-        },
-        {
-          name: 'ogImage',
-          type: 'upload',
-          relationTo: 'media',
-          label: 'OG Image',
-        },
+        { name: 'sourceUrl', type: 'text', label: 'Käll-URL' },
+        { name: 'wpId', type: 'number', label: 'WordPress ID' },
       ],
     },
-
-    // ── Timestamps (managed) ──────────────────────────────────────────────
     {
       name: 'lastVerified',
       type: 'date',
       label: 'Senast verifierad',
-      admin: {
-        description: 'Datum när kortets uppgifter senast kontrollerades',
-      },
+      admin: { position: 'sidebar' },
     },
   ],
 }
