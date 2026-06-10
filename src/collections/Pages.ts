@@ -80,17 +80,19 @@ export const Pages: CollectionConfig = {
       label: 'Författare',
       admin: { position: 'sidebar' },
     },
-    // ── Category-page extras (best-card box + curated toplist/table) ──────────
+    // ── Category-page extras (best-answer box + curated toplist/table) ───────
     {
+      // Deprecated relationship — kept hidden so we avoid a destructive
+      // migration. The "best" answer is now free text in bestCardSummary.
       name: 'bestCard',
       type: 'relationship',
       relationTo: 'credit-cards',
-      label: 'Bästa kortet (för "Vilket är bäst?"-rutan)',
+      admin: { hidden: true },
     },
     {
       name: 'bestCardSummary',
       type: 'textarea',
-      label: 'Motivering — varför detta kort är bäst',
+      label: 'Vilket är bäst? — fritext (visas i "Vilket är bäst?"-rutan)',
     },
     {
       name: 'toplistCards',
