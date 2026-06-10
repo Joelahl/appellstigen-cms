@@ -34,6 +34,10 @@ RUN mkdir -p ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Media upload dir (PAYLOAD_MEDIA_DIR=/app/media). Created owned by the runtime
+# user so a freshly-initialised Docker volume inherits writable ownership.
+RUN mkdir -p /app/media && chown -R nextjs:nogroup /app/media
+
 USER nextjs
 
 EXPOSE 3000
