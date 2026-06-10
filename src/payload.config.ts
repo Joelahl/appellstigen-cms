@@ -30,6 +30,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeDashboard: ['/components/admin/SitesDashboard#default'],
+    },
     livePreview: {
       url: ({ data, collectionConfig }) => previewPath(data?.slug, collectionConfig?.slug),
       collections: ['pages', 'credit-cards'],
