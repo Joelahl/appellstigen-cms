@@ -192,6 +192,7 @@ export const CreditCards: CollectionConfig = {
               name: 'reviewContent',
               type: 'textarea',
               label: 'Fullständig recension (HTML — migrerat innehåll)',
+              maxLength: 500000,
               admin: {
                 description:
                   'Migrerat HTML-innehåll från WordPress. Renderas som rik text på sajten.',

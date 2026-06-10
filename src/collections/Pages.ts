@@ -79,6 +79,7 @@ export const Pages: CollectionConfig = {
       name: 'content',
       type: 'textarea',
       label: 'Innehåll (HTML — migrerat)',
+      maxLength: 500000,
       admin: {
         description: 'Migrerat HTML-innehåll från WordPress. Renderas som rik text.',
         rows: 24,
