@@ -92,10 +92,13 @@ export const Sites: CollectionConfig = {
           label: 'Accent Color (hex)',
           defaultValue: '#f59e0b',
         },
-        // Per-site design assets — let the same template look different per site.
-        { name: 'faviconUrl', type: 'text', label: 'Favicon/ikon — URL' },
-        { name: 'heroImageUrl', type: 'text', label: 'Hero-bakgrundsbild — URL' },
-        { name: 'backgroundImageUrl', type: 'text', label: 'Sidbakgrund — URL (valfri)' },
+        // Per-site design assets — upload (preferred) or paste a URL.
+        { name: 'faviconImage', type: 'upload', relationTo: 'media', label: 'Favicon/ikon (uppladdad)' },
+        { name: 'faviconUrl', type: 'text', label: 'Favicon/ikon — URL (alternativ)' },
+        { name: 'heroImage', type: 'upload', relationTo: 'media', label: 'Hero-bakgrundsbild (uppladdad)' },
+        { name: 'heroImageUrl', type: 'text', label: 'Hero-bakgrundsbild — URL (alternativ)' },
+        { name: 'backgroundImage', type: 'upload', relationTo: 'media', label: 'Sidbakgrund (uppladdad)' },
+        { name: 'backgroundImageUrl', type: 'text', label: 'Sidbakgrund — URL (alternativ)' },
       ],
     },
     {
