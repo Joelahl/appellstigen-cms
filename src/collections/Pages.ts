@@ -39,14 +39,6 @@ export const Pages: CollectionConfig = {
       label: 'Slug (URL)',
       admin: { description: 'e.g. kreditkort-med-bonus' },
     },
-    // Legacy status field — superseded by native drafts. Hidden/unused.
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'published',
-      options: ['published', 'draft', 'archived'],
-      admin: { hidden: true },
-    },
     {
       type: 'row',
       fields: [

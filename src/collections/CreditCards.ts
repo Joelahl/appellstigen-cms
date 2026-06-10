@@ -12,8 +12,6 @@ import type { CollectionConfig } from 'payload'
  */
 export const CreditCards: CollectionConfig = {
   slug: 'credit-cards',
-  // Native drafts: unpublished versions are only returned to authenticated
-  // users (and via ?draft=true). Public clients get the published version.
   versions: {
     drafts: {
       autosave: { interval: 375 },
@@ -47,15 +45,6 @@ export const CreditCards: CollectionConfig = {
       unique: true,
       label: 'Slug (URL)',
       admin: { description: 'e.g. morrow-bank — används i /kreditkort/[slug]' },
-    },
-    // Legacy status field — superseded by native drafts (_status). Hidden and
-    // unused; retained only so migrations stay additive. Safe to drop later.
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'published',
-      options: ['published', 'draft', 'archived'],
-      admin: { hidden: true },
     },
     {
       type: 'row',

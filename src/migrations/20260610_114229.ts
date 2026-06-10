@@ -3,8 +3,8 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TYPE "public"."enum__credit_cards_v_version_status" AS ENUM('draft', 'published');
-  CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__pages_v_version_page_type" AS ENUM('homepage', 'category', 'info', 'legal', 'other');
+  CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
   CREATE TABLE "_credit_cards_v_version_pros" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -26,7 +26,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" integer,
   	"version_card_name" varchar,
   	"version_slug" varchar,
-  	"version_status" "enum__credit_cards_v_version_status" DEFAULT 'published',
   	"version_featured" boolean DEFAULT false,
   	"version_sort_order" numeric DEFAULT 100,
   	"version_issuer" varchar,
@@ -109,7 +108,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" integer,
   	"version_title" varchar,
   	"version_slug" varchar,
-  	"version_status" "enum__pages_v_version_status" DEFAULT 'published',
   	"version_page_type" "enum__pages_v_version_page_type" DEFAULT 'info',
   	"version_menu_order" numeric DEFAULT 0,
   	"version_site_id" integer,
@@ -129,26 +127,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"autosave" boolean
   );
   
-  ALTER TABLE "credit_cards" ALTER COLUMN "status" SET DATA TYPE text;
-  ALTER TABLE "credit_cards" ALTER COLUMN "status" SET DEFAULT 'published'::text;
-  ALTER TABLE "credit_cards" ALTER COLUMN "_status" SET DATA TYPE text;
-  ALTER TABLE "credit_cards" ALTER COLUMN "_status" SET DEFAULT 'draft'::text;
-  DROP TYPE "public"."enum_credit_cards_status";
-  CREATE TYPE "public"."enum_credit_cards_status" AS ENUM('draft', 'published');
-  ALTER TABLE "credit_cards" ALTER COLUMN "status" SET DEFAULT 'published'::"public"."enum_credit_cards_status";
-  ALTER TABLE "credit_cards" ALTER COLUMN "status" SET DATA TYPE "public"."enum_credit_cards_status" USING "status"::"public"."enum_credit_cards_status";
-  ALTER TABLE "credit_cards" ALTER COLUMN "_status" SET DEFAULT 'draft'::"public"."enum_credit_cards_status";
-  ALTER TABLE "credit_cards" ALTER COLUMN "_status" SET DATA TYPE "public"."enum_credit_cards_status" USING "_status"::"public"."enum_credit_cards_status";
-  ALTER TABLE "pages" ALTER COLUMN "status" SET DATA TYPE text;
-  ALTER TABLE "pages" ALTER COLUMN "status" SET DEFAULT 'published'::text;
-  ALTER TABLE "pages" ALTER COLUMN "_status" SET DATA TYPE text;
-  ALTER TABLE "pages" ALTER COLUMN "_status" SET DEFAULT 'draft'::text;
-  DROP TYPE "public"."enum_pages_status";
-  CREATE TYPE "public"."enum_pages_status" AS ENUM('draft', 'published');
-  ALTER TABLE "pages" ALTER COLUMN "status" SET DEFAULT 'published'::"public"."enum_pages_status";
-  ALTER TABLE "pages" ALTER COLUMN "status" SET DATA TYPE "public"."enum_pages_status" USING "status"::"public"."enum_pages_status";
-  ALTER TABLE "pages" ALTER COLUMN "_status" SET DEFAULT 'draft'::"public"."enum_pages_status";
-  ALTER TABLE "pages" ALTER COLUMN "_status" SET DATA TYPE "public"."enum_pages_status" USING "_status"::"public"."enum_pages_status";
   ALTER TABLE "credit_cards_pros" ALTER COLUMN "item" DROP NOT NULL;
   ALTER TABLE "credit_cards_cons" ALTER COLUMN "item" DROP NOT NULL;
   ALTER TABLE "credit_cards" ALTER COLUMN "card_name" DROP NOT NULL;
@@ -197,7 +175,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_latest_idx" ON "_pages_v" USING btree ("latest");
   CREATE INDEX "_pages_v_autosave_idx" ON "_pages_v" USING btree ("autosave");
   CREATE INDEX "credit_cards__status_idx" ON "credit_cards" USING btree ("_status");
-  CREATE INDEX "pages__status_idx" ON "pages" USING btree ("_status");`)
+  CREATE INDEX "pages__status_idx" ON "pages" USING btree ("_status");
+  ALTER TABLE "credit_cards" DROP COLUMN "status";
+  ALTER TABLE "pages" DROP COLUMN "status";
+  UPDATE "credit_cards" SET "_status" = 'published';
+  UPDATE "pages" SET "_status" = 'published';`)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
@@ -232,12 +214,14 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "credit_cards" ALTER COLUMN "slug" SET NOT NULL;
   ALTER TABLE "pages" ALTER COLUMN "title" SET NOT NULL;
   ALTER TABLE "pages" ALTER COLUMN "slug" SET NOT NULL;
+  ALTER TABLE "credit_cards" ADD COLUMN "status" "enum_credit_cards_status" DEFAULT 'draft';
+  ALTER TABLE "pages" ADD COLUMN "status" "enum_pages_status" DEFAULT 'draft';
   ALTER TABLE "users" DROP COLUMN "enable_a_p_i_key";
   ALTER TABLE "users" DROP COLUMN "api_key";
   ALTER TABLE "users" DROP COLUMN "api_key_index";
   ALTER TABLE "credit_cards" DROP COLUMN "_status";
   ALTER TABLE "pages" DROP COLUMN "_status";
   DROP TYPE "public"."enum__credit_cards_v_version_status";
-  DROP TYPE "public"."enum__pages_v_version_status";
-  DROP TYPE "public"."enum__pages_v_version_page_type";`)
+  DROP TYPE "public"."enum__pages_v_version_page_type";
+  DROP TYPE "public"."enum__pages_v_version_status";`)
 }

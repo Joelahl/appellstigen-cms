@@ -775,14 +775,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "enum_credit_cards_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'published'"
-        },
         "featured": {
           "name": "featured",
           "type": "boolean",
@@ -1605,14 +1597,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_status": {
-          "name": "version_status",
-          "type": "enum__credit_cards_v_version_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'published'"
-        },
         "version_featured": {
           "name": "version_featured",
           "type": "boolean",
@@ -2365,14 +2349,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "enum_pages_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'published'"
-        },
         "page_type": {
           "name": "page_type",
           "type": "enum_pages_page_type",
@@ -2584,14 +2560,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "version_status": {
-          "name": "version_status",
-          "type": "enum__pages_v_version_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'published'"
         },
         "version_page_type": {
           "name": "version_page_type",
@@ -3933,14 +3901,6 @@
         "published"
       ]
     },
-    "public.enum_pages_status": {
-      "name": "enum_pages_status",
-      "schema": "public",
-      "values": [
-        "draft",
-        "published"
-      ]
-    },
     "public.enum_pages_page_type": {
       "name": "enum_pages_page_type",
       "schema": "public",
@@ -3952,8 +3912,8 @@
         "other"
       ]
     },
-    "public.enum__pages_v_version_status": {
-      "name": "enum__pages_v_version_status",
+    "public.enum_pages_status": {
+      "name": "enum_pages_status",
       "schema": "public",
       "values": [
         "draft",
@@ -3970,6 +3930,14 @@
         "legal",
         "other"
       ]
+    },
+    "public.enum__pages_v_version_status": {
+      "name": "enum__pages_v_version_status",
+      "schema": "public",
+      "values": [
+        "draft",
+        "published"
+      ]
     }
   },
   "schemas": {},
@@ -3982,6 +3950,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "661f92b9-1b89-4659-855d-54329fca863d",
+  "id": "5a210d99-bd82-47af-b190-60340a4829f0",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
