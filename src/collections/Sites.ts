@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Sites: CollectionConfig = {
   slug: 'sites',
+  access: {
+    // Front-end sites read their own branding/design/nav without auth.
+    read: () => true,
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'domain', 'template', 'status'],
