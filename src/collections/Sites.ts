@@ -88,6 +88,19 @@ export const Sites: CollectionConfig = {
           label: 'Accent Color (hex)',
           defaultValue: '#f59e0b',
         },
+        // Per-site design assets — let the same template look different per site.
+        { name: 'faviconUrl', type: 'text', label: 'Favicon/ikon — URL' },
+        { name: 'heroImageUrl', type: 'text', label: 'Hero-bakgrundsbild — URL' },
+        { name: 'backgroundImageUrl', type: 'text', label: 'Sidbakgrund — URL (valfri)' },
+      ],
+    },
+    {
+      name: 'about',
+      type: 'group',
+      label: 'Om / Vad vi gör',
+      fields: [
+        { name: 'heading', type: 'text', label: 'Rubrik', defaultValue: 'Vad vi gör' },
+        { name: 'text', type: 'textarea', label: 'Text' },
       ],
     },
     {

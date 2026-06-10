@@ -74,6 +74,32 @@ export const Pages: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
     {
+      name: 'author',
+      type: 'relationship',
+      relationTo: 'authors',
+      label: 'Författare',
+      admin: { position: 'sidebar' },
+    },
+    // ── Category-page extras (best-card box + curated toplist/table) ──────────
+    {
+      name: 'bestCard',
+      type: 'relationship',
+      relationTo: 'credit-cards',
+      label: 'Bästa kortet (för "Vilket är bäst?"-rutan)',
+    },
+    {
+      name: 'bestCardSummary',
+      type: 'textarea',
+      label: 'Motivering — varför detta kort är bäst',
+    },
+    {
+      name: 'toplistCards',
+      type: 'relationship',
+      relationTo: 'credit-cards',
+      hasMany: true,
+      label: 'Topplista (ordnade kort) — driver lista + jämförelsetabell',
+    },
+    {
       name: 'excerpt',
       type: 'textarea',
       label: 'Ingress / utdrag',
