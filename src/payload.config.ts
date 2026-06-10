@@ -9,6 +9,7 @@ import { Users } from './collections/Users'
 import { Sites } from './collections/Sites'
 import { CreditCards } from './collections/CreditCards'
 import { Pages } from './collections/Pages'
+import { Reviews } from './collections/Reviews'
 import { Media } from './collections/Media'
 
 const filename = fileURLToPath(import.meta.url)
@@ -43,7 +44,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Sites, CreditCards, Pages, Media],
+  collections: [Users, Sites, CreditCards, Pages, Reviews, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
