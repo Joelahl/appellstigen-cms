@@ -33,6 +33,11 @@ export const Pages: CollectionConfig = {
       label: 'Titel',
     },
     {
+      name: 'excerpt',
+      type: 'textarea',
+      label: 'Ingress / utdrag',
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,
@@ -100,11 +105,6 @@ export const Pages: CollectionConfig = {
       relationTo: 'credit-cards',
       hasMany: true,
       label: 'Topplista (ordnade kort) — driver lista + jämförelsetabell',
-    },
-    {
-      name: 'excerpt',
-      type: 'textarea',
-      label: 'Ingress / utdrag',
     },
     {
       name: 'layout',
