@@ -12,6 +12,7 @@ import { Pages } from './collections/Pages'
 import { Reviews } from './collections/Reviews'
 import { Authors } from './collections/Authors'
 import { Media } from './collections/Media'
+import { AffiliateLinks } from './collections/AffiliateLinks'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -45,7 +46,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Sites, CreditCards, Pages, Reviews, Authors, Media],
+  collections: [Users, Sites, CreditCards, Pages, Reviews, Authors, Media, AffiliateLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
