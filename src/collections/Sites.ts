@@ -25,6 +25,17 @@ export const Sites: CollectionConfig = {
       label: 'Domain (e.g. bästa-kreditkort.nu)',
     },
     {
+      name: 'reviewSlug',
+      type: 'text',
+      defaultValue: 'kreditkort',
+      label: 'URL-segment för recensioner',
+      admin: {
+        description:
+          'URL-prefixet för enskilda recensioner, t.ex. "kreditkort" ger /kreditkort/<slug>. För andra sajter t.ex. "lan" eller "kort". Inga snedstreck.',
+        placeholder: 'kreditkort',
+      },
+    },
+    {
       name: 'template',
       type: 'select',
       required: true,
