@@ -95,6 +95,16 @@ export const Pages: CollectionConfig = {
       admin: { hidden: true },
     },
     {
+      name: 'bestCardTitle',
+      type: 'text',
+      label: '"Vilket är bäst?"-rutan — rubrik',
+      admin: {
+        description:
+          'Valfri rubrik i rutan. Lämna tomt för att använda standardmeningen "Vilket är det bästa [sidtitel]?".',
+        placeholder: 'T.ex. Vilket kreditkort är bäst för resor?',
+      },
+    },
+    {
       name: 'bestCardSummary',
       type: 'richText',
       label: 'Vilket är bäst? — fritext (visas i "Vilket är bäst?"-rutan)',
