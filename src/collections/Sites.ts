@@ -99,6 +99,27 @@ export const Sites: CollectionConfig = {
         { name: 'heroImageUrl', type: 'text', label: 'Hero-bakgrundsbild — URL (alternativ)' },
         { name: 'backgroundImage', type: 'upload', relationTo: 'media', label: 'Sidbakgrund (uppladdad)' },
         { name: 'backgroundImageUrl', type: 'text', label: 'Sidbakgrund — URL (alternativ)' },
+        // Light logo variant for dark backgrounds (e.g. footer).
+        { name: 'logoLight', type: 'upload', relationTo: 'media', label: 'Logotyp ljus (för mörk bakgrund)' },
+        { name: 'logoLightUrl', type: 'text', label: 'Logotyp ljus — URL (alternativ)' },
+      ],
+    },
+    {
+      name: 'company',
+      type: 'group',
+      label: 'Företagsuppgifter (footer)',
+      fields: [
+        { name: 'legalName', type: 'text', label: 'Företagsnamn' },
+        { name: 'orgNumber', type: 'text', label: 'Organisationsnummer' },
+        { name: 'address', type: 'textarea', label: 'Adress' },
+        {
+          type: 'row',
+          fields: [
+            { name: 'email', type: 'text', label: 'E-post', admin: { width: '50%' } },
+            { name: 'phone', type: 'text', label: 'Telefon', admin: { width: '50%' } },
+          ],
+        },
+        { name: 'openingHours', type: 'textarea', label: 'Öppettider' },
       ],
     },
     {
