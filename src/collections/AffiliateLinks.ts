@@ -19,9 +19,12 @@ export const AffiliateLinks: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'label',
-    defaultColumns: ['label', 'slug', 'active', 'clickCount', 'updatedAt'],
+    defaultColumns: ['label', 'slug', 'site', 'active', 'clickCount', 'updatedAt'],
     description: 'Affiliate-omdirigeringar — /till/[slug] → riktig affiliatelänk.',
   },
+  // Slug is unique per site (not globally) — two sites can each have "coop"
+  // pointing at different affiliate URLs / tracking IDs.
+  indexes: [{ fields: ['site', 'slug'], unique: true }],
   fields: [
     {
       name: 'label',
@@ -31,13 +34,23 @@ export const AffiliateLinks: CollectionConfig = {
       admin: { description: 'T.ex. "Coop Mastercard" — visas bara i admin.' },
     },
     {
+      name: 'site',
+      type: 'relationship',
+      relationTo: 'sites',
+      required: true,
+      label: 'Sajt',
+      admin: {
+        position: 'sidebar',
+        description: 'Vilken sajt länken hör till. Samma slug kan återanvändas på olika sajter.',
+      },
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,
-      unique: true,
       index: true,
       label: 'Slug (URL)',
-      admin: { description: 'Används i /till/[slug] — t.ex. coop, binance-review. Inga snedstreck.' },
+      admin: { description: 'Används i /till/[slug] — t.ex. coop, binance-review. Inga snedstreck. Unik per sajt.' },
     },
     {
       name: 'targetUrl',

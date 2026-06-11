@@ -36,6 +36,17 @@ export const Sites: CollectionConfig = {
       },
     },
     {
+      name: 'outboundSlug',
+      type: 'text',
+      defaultValue: 'till',
+      label: 'URL-segment för affiliate-omdirigeringar',
+      admin: {
+        description:
+          'URL-prefixet för affiliate-omdirigeringar, t.ex. "till" ger /till/<slug>. Inga snedstreck.',
+        placeholder: 'till',
+      },
+    },
+    {
       name: 'template',
       type: 'select',
       required: true,
