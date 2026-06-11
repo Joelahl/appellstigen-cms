@@ -7,11 +7,62 @@ import type { Block } from 'payload'
  * Add a new block type here once and it's available on every page.
  */
 
+/** Legacy raw-HTML block (kept for migrated WordPress content). */
 export const RichTextBlock: Block = {
   slug: 'richText',
-  labels: { singular: 'Text', plural: 'Text' },
+  labels: { singular: 'HTML (rå kod)', plural: 'HTML (rå kod)' },
   fields: [
     { name: 'html', type: 'textarea', label: 'Innehåll (HTML)', maxLength: 500000, admin: { rows: 14 } },
+  ],
+}
+
+/** Rich-text (Lexical) block — bold, italic, headings, lists, internal/external
+ *  links. Use this for new editorial content and internal linking. */
+export const ProseBlock: Block = {
+  slug: 'prose',
+  labels: { singular: 'Rich Text', plural: 'Rich Text' },
+  fields: [
+    {
+      name: 'content',
+      type: 'richText',
+      label: 'Innehåll',
+      admin: {
+        description:
+          'Redigerbart textblock med rubriker, fetstil, kursiv, listor och interna/externa länkar.',
+      },
+    },
+  ],
+}
+
+/** Standalone image block — upload from Media, alt text, caption and size. */
+export const ImageBlock: Block = {
+  slug: 'image',
+  labels: { singular: 'Bild', plural: 'Bilder' },
+  fields: [
+    { name: 'image', type: 'upload', relationTo: 'media', label: 'Bild' },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'alt',
+          type: 'text',
+          label: 'Alt-text',
+          admin: { width: '50%', description: 'Beskriv bilden för skärmläsare och SEO.' },
+        },
+        { name: 'caption', type: 'text', label: 'Bildtext', admin: { width: '50%' } },
+      ],
+    },
+    {
+      name: 'size',
+      type: 'select',
+      defaultValue: 'full',
+      label: 'Storlek',
+      options: [
+        { label: 'Full bredd', value: 'full' },
+        { label: 'Halv bredd (centrerad)', value: 'half' },
+        { label: 'Liten (centrerad)', value: 'small' },
+      ],
+    },
   ],
 }
 
@@ -112,6 +163,8 @@ export const ImageTextBlock: Block = {
 }
 
 export const layoutBlocks: Block[] = [
+  ProseBlock,
+  ImageBlock,
   RichTextBlock,
   HeroBlock,
   CardComparisonBlock,
