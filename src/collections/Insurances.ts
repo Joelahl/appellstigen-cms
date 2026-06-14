@@ -88,6 +88,25 @@ export const Insurances: CollectionConfig = {
           ],
         },
         {
+          label: 'Recension',
+          fields: [
+            {
+              name: 'pros',
+              type: 'array',
+              label: 'Fördelar',
+              fields: [{ name: 'item', type: 'text', required: true }],
+            },
+            {
+              name: 'cons',
+              type: 'array',
+              label: 'Nackdelar',
+              fields: [{ name: 'item', type: 'text', required: true }],
+            },
+            { name: 'verdict', type: 'textarea', label: 'Vårt omdöme' },
+            { name: 'reviewContent', type: 'richText', label: 'Recensionstext (lång)' },
+          ],
+        },
+        {
           label: 'Affiliate & SEO',
           fields: [
             { name: 'affiliateLink', type: 'text', label: 'Affiliate-länk' },
