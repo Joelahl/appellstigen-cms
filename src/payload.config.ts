@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Sites } from './collections/Sites'
 import { CreditCards } from './collections/CreditCards'
+import { Insurances } from './collections/Insurances'
 import { Pages } from './collections/Pages'
 import { Reviews } from './collections/Reviews'
 import { Authors } from './collections/Authors'
@@ -46,7 +47,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Sites, CreditCards, Pages, Reviews, Authors, Media, AffiliateLinks],
+  collections: [Users, Sites, CreditCards, Insurances, Pages, Reviews, Authors, Media, AffiliateLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
