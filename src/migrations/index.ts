@@ -17,6 +17,7 @@ import * as migration_20260611_200000 from './20260611_200000';
 import * as migration_20260611_210000 from './20260611_210000';
 import * as migration_20260612_090000 from './20260612_090000';
 import * as migration_20260615_025247_insurances from './20260615_025247_insurances';
+import * as migration_20260615_130000_sites_preview_url from './20260615_130000_sites_preview_url';
 
 export const migrations = [
   {
@@ -113,5 +114,10 @@ export const migrations = [
     up: migration_20260615_025247_insurances.up,
     down: migration_20260615_025247_insurances.down,
     name: '20260615_025247_insurances'
+  },
+  {
+    up: migration_20260615_130000_sites_preview_url.up,
+    down: migration_20260615_130000_sites_preview_url.down,
+    name: '20260615_130000_sites_preview_url'
   },
 ];

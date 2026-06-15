@@ -22,10 +22,37 @@ const PREVIEW_URL = process.env.PREVIEW_URL || ''
 const PREVIEW_SECRET = process.env.PREVIEW_SECRET || ''
 
 // Build the front-end preview URL for a doc in a given collection.
-const previewPath = (slug: string | undefined, collection: string | undefined) => {
+/**
+ * Resolve a doc's live-preview URL, SCOPED TO ITS SITE so each site previews on
+ * its own app (no cross-site content mixing). Pages carry a `site`; credit-cards
+ * are global, so we use their first associated site (or the default PREVIEW_URL).
+ * Async: looks up the site's previewUrl + reviewSlug.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const resolvePreviewUrl = async ({ data, collectionConfig, req }: any): Promise<string> => {
+  const slug = data?.slug
   if (!slug) return ''
-  const path = collection === 'pages' ? `/${slug}` : `/kreditkort/${slug}`
-  return `${PREVIEW_URL}/api/preview?secret=${PREVIEW_SECRET}&path=${encodeURIComponent(path)}`
+  const coll = collectionConfig?.slug
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const idOf = (v: any) => (v && typeof v === 'object' ? v.id : v)
+  const siteId = coll === 'pages' ? idOf(data?.site) : idOf((data?.sites || [])[0])
+
+  let base = PREVIEW_URL
+  let reviewSlug = 'kreditkort'
+  const payload = req?.payload
+  if (siteId && payload) {
+    try {
+      const site = await payload.findByID({ collection: 'sites', id: siteId, depth: 0 })
+      if (site) {
+        base = (site.previewUrl as string) || PREVIEW_URL
+        reviewSlug = (site.reviewSlug as string) || reviewSlug
+      }
+    } catch {
+      /* fall back to PREVIEW_URL */
+    }
+  }
+  const path = coll === 'pages' ? `/${slug}` : `/${reviewSlug}/${slug}`
+  return `${base}/api/preview?secret=${PREVIEW_SECRET}&path=${encodeURIComponent(path)}`
 }
 
 export default buildConfig({
@@ -38,7 +65,7 @@ export default buildConfig({
       beforeDashboard: ['/components/admin/SitesDashboard#default'],
     },
     livePreview: {
-      url: ({ data, collectionConfig }) => previewPath(data?.slug, collectionConfig?.slug),
+      url: resolvePreviewUrl,
       collections: ['pages', 'credit-cards'],
       breakpoints: [
         { label: 'Mobil', name: 'mobile', width: 390, height: 844 },
