@@ -58,21 +58,24 @@ const SitesDashboard = async () => {
           }}
         >
           {siteStats.map(({ site, pages }) => (
-            <Link
+            <div
               key={site.id}
-              href={`/admin/collections/sites/${site.id}`}
               style={{
                 display: 'block',
                 border: '1px solid var(--theme-elevation-150)',
                 borderRadius: '8px',
                 padding: '1rem',
-                textDecoration: 'none',
                 color: 'inherit',
                 background: 'var(--theme-elevation-50)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <strong style={{ fontSize: '1.05rem' }}>{site.name}</strong>
+                <Link
+                  href={`/admin/collections/sites/${site.id}`}
+                  style={{ fontSize: '1.05rem', fontWeight: 700, textDecoration: 'none', color: 'inherit' }}
+                >
+                  {site.name}
+                </Link>
                 <span
                   style={{
                     marginLeft: 'auto',
@@ -95,7 +98,19 @@ const SitesDashboard = async () => {
                 <span>📄 {pages} sidor</span>
                 <span style={{ opacity: 0.6 }}>{String(site.template || '')}</span>
               </div>
-            </Link>
+              {site.previewUrl ? (
+                <a
+                  href={String(site.previewUrl)}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: 'inline-block', marginTop: '0.6rem', fontSize: '0.85rem', fontWeight: 600 }}
+                >
+                  🔗 Förhandsgranska →
+                </a>
+              ) : (
+                <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', opacity: 0.5 }}>Ingen preview-URL satt</div>
+              )}
+            </div>
           ))}
         </div>
       )}

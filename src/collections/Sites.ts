@@ -25,6 +25,16 @@ export const Sites: CollectionConfig = {
       label: 'Domain (e.g. bästa-kreditkort.nu)',
     },
     {
+      name: 'previewUrl',
+      type: 'text',
+      label: 'Preview-URL',
+      admin: {
+        description:
+          'Bas-URL för förhandsgranskning innan domänen pekar om, t.ex. http://insfind.65.108.85.200.sslip.io eller https://din-domän. Driver live-preview för den här sajtens sidor + länken i sajtöversikten.',
+        placeholder: 'https://…',
+      },
+    },
+    {
       name: 'reviewSlug',
       type: 'text',
       defaultValue: 'kreditkort',
