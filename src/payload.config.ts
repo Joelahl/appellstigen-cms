@@ -14,6 +14,8 @@ import { Reviews } from './collections/Reviews'
 import { Authors } from './collections/Authors'
 import { Media } from './collections/Media'
 import { AffiliateLinks } from './collections/AffiliateLinks'
+import { TopicClusters } from './collections/TopicClusters'
+import { ContentPlan } from './collections/ContentPlan'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,7 +76,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Sites, CreditCards, Insurances, Pages, Reviews, Authors, Media, AffiliateLinks],
+  collections: [Users, Sites, CreditCards, Insurances, Pages, Reviews, Authors, Media, AffiliateLinks, TopicClusters, ContentPlan],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

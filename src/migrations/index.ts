@@ -18,6 +18,7 @@ import * as migration_20260611_210000 from './20260611_210000';
 import * as migration_20260612_090000 from './20260612_090000';
 import * as migration_20260615_025247_insurances from './20260615_025247_insurances';
 import * as migration_20260615_130000_sites_preview_url from './20260615_130000_sites_preview_url';
+import * as migration_20260615_140000_content_plan from './20260615_140000_content_plan';
 
 export const migrations = [
   {
@@ -119,5 +120,10 @@ export const migrations = [
     up: migration_20260615_130000_sites_preview_url.up,
     down: migration_20260615_130000_sites_preview_url.down,
     name: '20260615_130000_sites_preview_url'
+  },
+  {
+    up: migration_20260615_140000_content_plan.up,
+    down: migration_20260615_140000_content_plan.down,
+    name: '20260615_140000_content_plan'
   },
 ];
