@@ -101,23 +101,21 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
-  ALTER TABLE "content_plan_secondary_keywords" DISABLE ROW LEVEL SECURITY;
-  ALTER TABLE "content_plan" DISABLE ROW LEVEL SECURITY;
-  ALTER TABLE "topic_clusters" DISABLE ROW LEVEL SECURITY;
-  DROP TABLE "content_plan_secondary_keywords" CASCADE;
-  DROP TABLE "content_plan" CASCADE;
-  DROP TABLE "topic_clusters" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_topic_clusters_fk";
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_content_plan_fk";
-  DROP INDEX "payload_locked_documents_rels_topic_clusters_id_idx";
-  DROP INDEX "payload_locked_documents_rels_content_plan_id_idx";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "topic_clusters_id";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "content_plan_id";
-  DROP TYPE "public"."enum_topic_clusters_priority";
-  DROP TYPE "public"."enum_topic_clusters_status";
-  DROP TYPE "public"."enum_content_plan_search_intent";
-  DROP TYPE "public"."enum_content_plan_funnel_stage";
-  DROP TYPE "public"."enum_content_plan_content_type";
-  DROP TYPE "public"."enum_content_plan_priority";
-  DROP TYPE "public"."enum_content_plan_status";`)
+  -- Drop FK constraints before tables to avoid cascade-then-explicit-drop conflicts
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_topic_clusters_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_content_plan_fk";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_topic_clusters_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_content_plan_id_idx";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "topic_clusters_id";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "content_plan_id";
+  DROP TABLE IF EXISTS "content_plan_secondary_keywords" CASCADE;
+  DROP TABLE IF EXISTS "content_plan" CASCADE;
+  DROP TABLE IF EXISTS "topic_clusters" CASCADE;
+  DROP TYPE IF EXISTS "public"."enum_topic_clusters_priority";
+  DROP TYPE IF EXISTS "public"."enum_topic_clusters_status";
+  DROP TYPE IF EXISTS "public"."enum_content_plan_search_intent";
+  DROP TYPE IF EXISTS "public"."enum_content_plan_funnel_stage";
+  DROP TYPE IF EXISTS "public"."enum_content_plan_content_type";
+  DROP TYPE IF EXISTS "public"."enum_content_plan_priority";
+  DROP TYPE IF EXISTS "public"."enum_content_plan_status";`)
 }
