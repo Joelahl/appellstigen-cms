@@ -21,6 +21,7 @@ import * as migration_20260615_130000_sites_preview_url from './20260615_130000_
 import * as migration_20260615_140000_content_plan from './20260615_140000_content_plan';
 import * as migration_20260615_150000_remove_content_plan from './20260615_150000_remove_content_plan';
 import * as migration_20260616_100000_review_product_insurance_cleanup from './20260616_100000_review_product_insurance_cleanup';
+import * as migration_20260616_130000_reviews_rels_fix from './20260616_130000_reviews_rels_fix';
 
 export const migrations = [
   {
@@ -137,5 +138,10 @@ export const migrations = [
     up: migration_20260616_100000_review_product_insurance_cleanup.up,
     down: migration_20260616_100000_review_product_insurance_cleanup.down,
     name: '20260616_100000_review_product_insurance_cleanup'
+  },
+  {
+    up: migration_20260616_130000_reviews_rels_fix.up,
+    down: migration_20260616_130000_reviews_rels_fix.down,
+    name: '20260616_130000_reviews_rels_fix'
   },
 ];
