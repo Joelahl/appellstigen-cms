@@ -22,7 +22,7 @@ export const Insurances: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'insuranceName',
-    defaultColumns: ['insuranceName', 'provider', 'insuranceType', '_status', 'featured'],
+    defaultColumns: ['insuranceName', 'provider', '_status', 'featured'],
     description: 'Försäkringar — global datakälla som kan användas av flera sajter.',
   },
   fields: [
@@ -66,7 +66,6 @@ export const Insurances: CollectionConfig = {
           label: 'Allmänt',
           fields: [
             { name: 'provider', type: 'text', label: 'Försäkringsbolag' },
-            { name: 'insuranceType', type: 'text', label: 'Typ (t.ex. Hemförsäkring, Bilförsäkring)' },
             { name: 'bestFor', type: 'text', label: 'Passar bra som' },
             { name: 'logo', type: 'upload', relationTo: 'media', label: 'Logotyp (uppladdad — valfri)' },
             { name: 'logoUrl', type: 'text', label: 'Logotyp — URL (alternativ)' },
@@ -85,25 +84,6 @@ export const Insurances: CollectionConfig = {
               label: 'Höjdpunkter (chips)',
               fields: [{ name: 'item', type: 'text', required: true }],
             },
-          ],
-        },
-        {
-          label: 'Recension',
-          fields: [
-            {
-              name: 'pros',
-              type: 'array',
-              label: 'Fördelar',
-              fields: [{ name: 'item', type: 'text', required: true }],
-            },
-            {
-              name: 'cons',
-              type: 'array',
-              label: 'Nackdelar',
-              fields: [{ name: 'item', type: 'text', required: true }],
-            },
-            { name: 'verdict', type: 'textarea', label: 'Vårt omdöme' },
-            { name: 'reviewContent', type: 'richText', label: 'Recensionstext (lång)' },
           ],
         },
         {

@@ -14,8 +14,6 @@ import { Reviews } from './collections/Reviews'
 import { Authors } from './collections/Authors'
 import { Media } from './collections/Media'
 import { AffiliateLinks } from './collections/AffiliateLinks'
-import { TopicClusters } from './collections/TopicClusters'
-import { ContentPlan } from './collections/ContentPlan'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,10 +23,9 @@ const PREVIEW_SECRET = process.env.PREVIEW_SECRET || ''
 
 // Build the front-end preview URL for a doc in a given collection.
 /**
- * Resolve a doc's live-preview URL, SCOPED TO ITS SITE so each site previews on
- * its own app (no cross-site content mixing). Pages carry a `site`; credit-cards
- * are global, so we use their first associated site (or the default PREVIEW_URL).
- * Async: looks up the site's previewUrl + reviewSlug.
+ * Resolve a doc's live-preview URL. Pages carry a `site`; Reviews carry a `site`
+ * relation directly. Global collections (credit-cards, insurances) fall back to
+ * the default PREVIEW_URL since they have no site association.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resolvePreviewUrl = async ({ data, collectionConfig, req }: any): Promise<string> => {
@@ -37,7 +34,8 @@ const resolvePreviewUrl = async ({ data, collectionConfig, req }: any): Promise<
   const coll = collectionConfig?.slug
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const idOf = (v: any) => (v && typeof v === 'object' ? v.id : v)
-  const siteId = coll === 'pages' ? idOf(data?.site) : idOf((data?.sites || [])[0])
+  // Pages and Reviews both carry a `site` field directly.
+  const siteId = idOf(data?.site) ?? null
 
   let base = PREVIEW_URL
   let reviewSlug = 'kreditkort'
@@ -76,7 +74,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Sites, CreditCards, Insurances, Pages, Reviews, Authors, Media, AffiliateLinks, TopicClusters, ContentPlan],
+  collections: [Users, Sites, CreditCards, Insurances, Pages, Reviews, Authors, Media, AffiliateLinks],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

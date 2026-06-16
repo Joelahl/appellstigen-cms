@@ -262,15 +262,7 @@ export const CreditCards: CollectionConfig = {
       ],
     },
 
-    // ── Relations & source (sidebar) ──────────────────────────────────────
-    {
-      name: 'sites',
-      type: 'relationship',
-      relationTo: 'sites',
-      hasMany: true,
-      label: 'Sajter (valfritt — vilka sajter visar detta kort)',
-      admin: { position: 'sidebar' },
-    },
+    // ── Source & metadata (sidebar) ───────────────────────────────────────
     {
       name: 'source',
       type: 'group',

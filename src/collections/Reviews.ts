@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
 /**
- * Reviews — site-unique editorial reviews of a (global) credit card.
+ * Reviews — site-unique editorial reviews of a global product (credit card or insurance).
  *
- * The factual card data lives once in CreditCards; a Review layers site-specific
- * content on top: each site can have its own review of the same card (its own
- * title, body, rating, pros/cons, SEO). One card → many reviews (one per site).
+ * The factual product data lives once in CreditCards or Insurances; a Review layers
+ * site-specific content on top: each site can have its own review of the same product
+ * (its own title, body, rating, pros/cons, SEO). One product → many reviews (one per site).
  */
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
@@ -20,8 +20,8 @@ export const Reviews: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'site', 'card', '_status'],
-    description: 'Sajt-unika recensioner ovanpå global kortdata.',
+    defaultColumns: ['title', 'site', 'product', '_status'],
+    description: 'Sajt-unika recensioner ovanpå global produktdata (kreditkort eller försäkring).',
     preview: (doc) =>
       doc?.slug
         ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/kreditkort/${doc.slug}`
@@ -40,7 +40,7 @@ export const Reviews: CollectionConfig = {
       required: true,
       index: true,
       label: 'Slug (URL)',
-      admin: { description: 'Vanligtvis samma som kortets slug, t.ex. morrow-bank' },
+      admin: { description: 'Vanligtvis samma som produktens slug, t.ex. morrow-bank eller if-hemforsakring' },
     },
     {
       type: 'row',
@@ -54,12 +54,12 @@ export const Reviews: CollectionConfig = {
           admin: { width: '50%' },
         },
         {
-          name: 'card',
+          name: 'product',
           type: 'relationship',
-          relationTo: 'credit-cards',
+          relationTo: ['credit-cards', 'insurances'],
           required: true,
-          label: 'Kort (global data)',
-          admin: { width: '50%' },
+          label: 'Produkt (global data)',
+          admin: { width: '50%', description: 'Välj kreditkort eller försäkring' },
         },
       ],
     },
