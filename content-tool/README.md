@@ -5,17 +5,22 @@ instead of the metered Anthropic API. The **ops dashboard** (ops.tacotech.se)
 owns the queue; the **CMS** (cms.tacotech.se) holds finished content as drafts.
 
 ```
-ops content_plan (status: briefed)         ← the queue, edited in ops.tacotech.se
+ops content_plan (status: pending)         ← the queue ("Ej publicerad"), edited in ops.tacotech.se
         │
         ▼  /content-tool <siteId>           ← the driver skill (Claude Code, Max plan)
   GET /api/content-tool/queue               → items + ready-made writer systemPrompt
         ├─ writer subagent  (per item)      → researches + writes (no metered API)
         ├─ upload.mjs                        → creates a CMS DRAFT (pages/reviews)
-        └─ POST /api/content-tool/complete   → ops item → "review", links the page, logs it
+        └─ POST /api/content-tool/complete   → ops item → "published", links the page, logs it
         │
         ▼
   CMS admin → human reviews the draft → Publish   ← the quality gate
 ```
+
+The plan has two states: **pending** ("Ej publicerad") and **published**. The tool
+picks up `pending` items and flips them to `published` once the draft is created in
+the CMS — so "published" here means *draft pushed*, not yet live (the CMS still
+gates the actual go-live).
 
 ## Why this shape
 
@@ -28,8 +33,8 @@ ops content_plan (status: briefed)         ← the queue, edited in ops.tacotech
   over the saved `writer_prompt`, so output matches the dashboard's voice/SEO rules.
 - **Per-site identity** comes from the CMS `Sites` record + the ops site context —
   one engine, many brand brains. Nothing is forked per site.
-- **Nothing auto-publishes.** Drafts land in the CMS; the ops item moves to
-  `review`. A human publishes.
+- **Nothing auto-publishes.** Drafts land in the CMS; the ops item is marked
+  `published` (= draft created). A human still publishes the CMS draft to go live.
 
 ## Setup
 
@@ -47,12 +52,12 @@ same `CONTENT_TOOL_TOKEN`.
 
 ## Run
 
-From Claude Code: `/content-tool <cmsSiteId> [status]` (status defaults to `briefed`).
+From Claude Code: `/content-tool <cmsSiteId> [status]` (status defaults to `pending`).
 
 Manual pieces (run from `affiliate-cms/`):
 
 ```bash
-node content-tool/ops.mjs queue --site 1 --status briefed   # inspect the queue
+node content-tool/ops.mjs queue --site 1 --status pending    # inspect the queue
 node content-tool/upload.mjs content-tool/.work/<id>.json   # upload one draft
 node content-tool/ops.mjs complete --item <id> --page <id>  # report back to ops
 ```
