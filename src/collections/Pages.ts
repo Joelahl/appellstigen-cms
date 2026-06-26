@@ -56,6 +56,8 @@ export const Pages: CollectionConfig = {
           options: [
             { label: 'Startsida', value: 'homepage' },
             { label: 'Kategorisida', value: 'category' },
+            { label: 'Guide', value: 'guide' },
+            { label: 'Nyhet', value: 'news' },
             { label: 'Informationssida', value: 'info' },
             { label: 'Juridisk', value: 'legal' },
             { label: 'Övrig', value: 'other' },
