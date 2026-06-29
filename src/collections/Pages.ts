@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { layoutBlocks } from '../blocks'
+import { buildPreviewUrl } from '../preview'
 
 /**
  * Pages — editorial pages for a site (homepage copy, category landing pages,
@@ -20,10 +21,8 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'pageType', 'site', '_status'],
     description: 'Sidor — startsida, kategorisidor, om oss, juridiskt m.m.',
-    preview: (doc) =>
-      doc?.slug
-        ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/${doc.slug}`
-        : null,
+    preview: (doc, { req }) =>
+      buildPreviewUrl({ slug: doc?.slug as string, collection: 'pages', site: (doc as { site?: unknown })?.site, payload: req?.payload }),
   },
   fields: [
     {
