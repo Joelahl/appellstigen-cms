@@ -11,7 +11,7 @@
  *   CONTENT_TOOL_TOKEN  matches CONTENT_TOOL_TOKEN on the dashboard
  *
  * Usage:
- *   node content-tool/ops.mjs queue --site <cmsSiteId> [--status pending] [--limit 10]
+ *   node content-tool/ops.mjs queue --site <cmsSiteId> [--status pending] [--limit 10] [--item <planItemId>]
  *   node content-tool/ops.mjs complete --item <id> --page <cmsPageId> [--site <id>] [--title "..."] [--status published]
  */
 import { fileURLToPath } from 'node:url'
@@ -50,6 +50,7 @@ const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${T
 if (cmd === 'queue') {
   if (!a.site) { console.error('--site <cmsSiteId> required'); process.exit(1) }
   const qs = new URLSearchParams({ siteId: a.site, status: a.status || 'pending', limit: a.limit || '10' })
+  if (a.item) qs.set('itemId', a.item) // target ONE specific plan item (any status)
   const res = await fetch(`${OPS_URL}/api/content-tool/queue?${qs}`, { headers })
   const body = await res.json().catch(() => ({}))
   if (!res.ok) { console.error(`queue: ${res.status} ${JSON.stringify(body).slice(0, 300)}`); process.exit(1) }
