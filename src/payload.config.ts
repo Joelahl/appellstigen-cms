@@ -14,46 +14,16 @@ import { Reviews } from './collections/Reviews'
 import { Authors } from './collections/Authors'
 import { Media } from './collections/Media'
 import { AffiliateLinks } from './collections/AffiliateLinks'
+import { PREVIEW_URL, buildPreviewUrl } from './preview'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const PREVIEW_URL = process.env.PREVIEW_URL || ''
-const PREVIEW_SECRET = process.env.PREVIEW_SECRET || ''
-
-// Build the front-end preview URL for a doc in a given collection.
-/**
- * Resolve a doc's live-preview URL. Pages carry a `site`; Reviews carry a `site`
- * relation directly. Global collections (credit-cards, insurances) fall back to
- * the default PREVIEW_URL since they have no site association.
- */
+// Live Preview shares the exact same resolver as the collection "Preview" buttons
+// (see src/preview.ts) so both point at the doc's site front-end, not the env var.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const resolvePreviewUrl = async ({ data, collectionConfig, req }: any): Promise<string> => {
-  const slug = data?.slug
-  if (!slug) return ''
-  const coll = collectionConfig?.slug
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const idOf = (v: any) => (v && typeof v === 'object' ? v.id : v)
-  // Pages and Reviews both carry a `site` field directly.
-  const siteId = idOf(data?.site) ?? null
-
-  let base = PREVIEW_URL
-  let reviewSlug = 'kreditkort'
-  const payload = req?.payload
-  if (siteId && payload) {
-    try {
-      const site = await payload.findByID({ collection: 'sites', id: siteId, depth: 0 })
-      if (site) {
-        base = (site.previewUrl as string) || PREVIEW_URL
-        reviewSlug = (site.reviewSlug as string) || reviewSlug
-      }
-    } catch {
-      /* fall back to PREVIEW_URL */
-    }
-  }
-  const path = coll === 'pages' ? `/${slug}` : `/${reviewSlug}/${slug}`
-  return `${base}/api/preview?secret=${PREVIEW_SECRET}&path=${encodeURIComponent(path)}`
-}
+const resolvePreviewUrl = ({ data, collectionConfig, req }: any): Promise<string> =>
+  buildPreviewUrl({ slug: data?.slug, collection: collectionConfig?.slug, site: data?.site, payload: req?.payload })
 
 export default buildConfig({
   admin: {

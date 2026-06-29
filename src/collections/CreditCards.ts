@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { buildPreviewUrl } from '../preview'
 
 /**
  * CreditCards — GLOBAL library of factual credit-card data.
@@ -25,10 +26,8 @@ export const CreditCards: CollectionConfig = {
     useAsTitle: 'cardName',
     defaultColumns: ['cardName', 'issuer', 'cardType', '_status', 'featured'],
     description: 'Kreditkort — global datakälla som kan användas av flera sajter.',
-    preview: (doc) =>
-      doc?.slug
-        ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/kreditkort/${doc.slug}`
-        : null,
+    preview: (doc, { req }) =>
+      buildPreviewUrl({ slug: doc?.slug as string, collection: 'credit-cards', payload: req?.payload }),
   },
   fields: [
     // ── Always-visible identity ───────────────────────────────────────────

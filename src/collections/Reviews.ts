@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { buildPreviewUrl } from '../preview'
 
 /**
  * Reviews — site-unique editorial reviews of a global product (credit card or insurance).
@@ -22,10 +23,8 @@ export const Reviews: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'site', 'product', '_status'],
     description: 'Sajt-unika recensioner ovanpå global produktdata (kreditkort eller försäkring).',
-    preview: (doc) =>
-      doc?.slug
-        ? `${process.env.PREVIEW_URL || ''}/api/preview?secret=${process.env.PREVIEW_SECRET || ''}&path=/kreditkort/${doc.slug}`
-        : null,
+    preview: (doc, { req }) =>
+      buildPreviewUrl({ slug: doc?.slug as string, collection: 'reviews', site: (doc as { site?: unknown })?.site, payload: req?.payload }),
   },
   fields: [
     {
