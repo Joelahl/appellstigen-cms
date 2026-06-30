@@ -45,10 +45,14 @@ PAYLOAD_CMS_URL=https://cms.tacotech.se     # CMS (upload target)
 PAYLOAD_API_KEY=<Users API key>
 OPS_URL=https://ops.tacotech.se             # ops dashboard (the queue)
 CONTENT_TOOL_TOKEN=<openssl rand -hex 32>   # must match the dashboard's env var
+UNSPLASH_ACCESS_KEY=<access key>            # optional: real photos for news/guides
 ```
 
 The dashboard must be deployed with the new `/api/content-tool/*` routes and the
-same `CONTENT_TOOL_TOKEN`.
+same `CONTENT_TOOL_TOKEN`. `UNSPLASH_ACCESS_KEY` is optional (free at
+https://unsplash.com/developers): with it, news/guide thumbnails use a real
+Unsplash photo rehosted into Media; without it they fall back to the branded
+`image.mjs` banner.
 
 ## Run
 
@@ -65,6 +69,8 @@ node content-tool/ops.mjs complete --item <id> --page <id>  # report back to ops
 ## Files
 
 - `ops.mjs` — client for the ops queue/complete endpoints (the source of truth).
+- `unsplash.mjs` — fetches a free Unsplash photo for a news/guide thumbnail and rehosts it into Media.
+- `image.mjs` — generates the branded SVG banner (category/other pages) and uploads it to Media.
 - `upload.mjs` — uploads one article to the CMS as a draft; writes a `.result.json` sidecar.
 - `lib.mjs` — CMS auth + idempotent draft-upsert (by slug + site); auto-loads `.env`.
 - `.work/` — writer subagents drop article JSON + result sidecars here (gitignored).
